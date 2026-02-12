@@ -8,21 +8,25 @@ import time
 import base64
 from PIL import Image
 
-DATA_FOLDER = r"R:\TRNPH1\03 Reference\BIM_TRACK"
-RFI_FOLDER = r"R:\TRNPH1\01 Incoming\10 RFI"
-
 DRAWING_EXCEL = "TR-BKK2-PH1 - Shop Drawing Submission_R0.xlsx"
 RFI_EXCEL = "TR-BKK2-PH1 - Request for Information Submission_R1.xlsx"
 
-MASTER_DRAWING_PATH = os.path.join(DATA_FOLDER, DRAWING_EXCEL)
-MASTER_RFI_PATH = os.path.join(DATA_FOLDER, RFI_EXCEL)
+# 2. แก้ Path ของไฟล์ต่างๆ ให้ชี้ไปที่ชื่อไฟล์โดยตรง (ไม่ต้องมี R:\...)
+MASTER_DRAWING_PATH = DRAWING_EXCEL
+MASTER_RFI_PATH = RFI_EXCEL
 
-STATUS_FILE = os.path.join(DATA_FOLDER, "bim_status.csv")
-CREDENTIALS_FILE = os.path.join(DATA_FOLDER, "bim_users.csv")
-PRIVATE_CHAT_FILE = os.path.join(DATA_FOLDER, "bim_private_chat.csv")
-NOTIFY_FILE = os.path.join(DATA_FOLDER, "bim_notifications.csv")
-RFI_LINKS_FILE = os.path.join(DATA_FOLDER, "bim_drawing_rfi_links.csv")
-IMG_FOLDER = os.path.join(DATA_FOLDER, "profile_images")
+STATUS_FILE = "bim_status.csv"
+CREDENTIALS_FILE = "bim_users.csv"
+PRIVATE_CHAT_FILE = "bim_private_chat.csv"
+NOTIFY_FILE = "bim_notifications.csv"
+RFI_LINKS_FILE = "bim_drawing_rfi_links.csv"
+
+# 3. สำหรับโฟลเดอร์รูปภาพ ถ้าใน GitHub คุณสร้างโฟลเดอร์ชื่อ profile_images ไว้
+IMG_FOLDER = "profile_images"
+
+# ถ้ายังไม่มีโฟลเดอร์ ให้สร้างเผื่อไว้ในโค้ดกันพัง
+if not os.path.exists(IMG_FOLDER):
+    os.makedirs(IMG_FOLDER)
 
 # Settings
 OFFLINE_TIMEOUT_MINUTES = 5
