@@ -1,0 +1,190 @@
+Category,Drawing_ID,Drawing_Name,Due_Date,Status,Updated_By,Last_Modified
+ME,RFAS-ME-0002,Mechanical Legend & Abbreviation,1/12/2026,Submitted,Pakapon,-
+ME,RFAS-ME-0003,Acmv Air Side Schematic ,1/19/2026,-,-,-
+ME,RFAS-ME-0004,Stair And Fireman Lift Lobby Pressurization Schematic,1/19/2026,-,-,-
+ME,RFAS-ME-0005,Acmv Piping System Schematic - Risers ,2/5/2026,-,-,-
+ME,RFAS-ME-0006,Acmv Piping System Schematic - Chiller Plant,2/7/2026,-,-,-
+ME,RFAS-ME-0007,Equipment Schedule ,2/25/2026,-,-,-
+ME,RFAS-ME-0009,Level 2 - Ducting Layout Plan,2/9/2026,-,-,-
+ME,RFAS-ME-0014,Level 2 - Acmv Pipe Routing Layout Plan,2/16/2026,-,-,-
+ME,RFAS-ME-0015,Level 2 - Condensate Drain Pipe Routing Layout Plan,2/16/2026,-,-,-
+ME,RFAS-ME-0016,Level 2 - Liquid Cooling Pipe Routing Layout Plan,2/16/2026,-,-,-
+ME,RFAS-ME-0025,Level 2 - Gas Leak Detection Layout Plan,2/23/2026,-,-,-
+ME,RFAS-ME-0026,Level 2 - Water And Fuel Leak Detection Layout Plan,2/23/2026,-,-,-
+ME,RFAS-ME-0027,Level 2 - Space Temperature And Humidity Sensor Layout Plan,2/23/2026,-,-,-
+ME,RFAS-ME-0028,Level 2 - Fan Wall Sensor Layout And Details,2/23/2026,-,-,-
+ME,RFAS-ME-0033,Typical Detail,1/26/2026,-,-,-
+ME,RFAS-ME-0035,Mechanical Service Electrical Single Line Diagram Sheet-2,2/23/2026,-,-,-
+ME,RFAS-ME-0037,Mechanical Service Electrical Single Line Diagram Sheet-4,2/28/2026,-,-,-
+ME,RFAS-ME-0038,Mechanical Service Electrical Single Line Diagram Sheet-5,2/28/2026,-,-,-
+ME,RFAS-ME-0039,Mechanical Service Electrical Single Line Diagram Sheet-6,2/28/2026,-,-,-
+ME,RFAS-ME-0040,Mechanical Service Electrical Single Line Diagram Sheet-7,2/28/2026,-,-,-
+ME,RFAS-ME-0041,Mechanical Service Electrical Single Line Diagram Sheet-8,2/28/2026,-,-,-
+ME,RFAS-ME-0042,Mechanical Service Electrical Single Line Diagram Sheet-9,2/28/2026,-,-,-
+ME,RFAS-ME-0043,Mechanical Service Electrical Single Line Diagram Sheet-10,2/28/2026,-,-,-
+ME,RFAS-ME-0044,Mechanical Service Electrical Single Line Diagram Sheet-11,2/28/2026,-,-,-
+ME,RFAS-ME-0045,Mechanical Service Electrical Single Line Diagram Sheet-12,2/28/2026,-,-,-
+ME,RFAS-ME-0046,Mechanical Service Electrical Single Line Diagram Sheet-13,2/28/2026,-,-,-
+ME,RFAS-ME-0047,Mechanical Service Electrical Single Line Diagram Sheet-14,2/28/2026,-,-,-
+ME,RFAS-ME-0048,Mechanical Service Electrical Single Line Diagram Sheet-15,2/28/2026,-,-,-
+ME,RFAS-ME-0049,Mechanical Service Electrical Single Line Diagram Sheet-16,2/28/2026,-,-,-
+ME,RFAS-ME-0050,Mechanical Service Electrical Single Line Diagram Sheet-17,2/28/2026,-,-,-
+ME,RFAS-ME-0051,Mechanical Service Electrical Single Line Diagram Sheet-18,2/28/2026,-,-,-
+AR,RFAS-AR-0013,Level 1 - Bund Wall Setting-out & Details,2/5/2026,-,-,-
+AR,RFAS-AR-0014,Level 1 - Wall Finishes & Details,2/5/2026,-,-,-
+AR,RFAS-AR-0015,Level 1 - Block Wall Layout & Details,2/5/2026,-,-,-
+AR,RFAS-AR-0021,Level 2 - Wire Mesh Layout & Details,2/5/2026,-,-,-
+AR,RFAS-AR-0023,Level 3 - Partition Wall Support Layout & Details,2/19/2026,-,-,-
+AR,RFAS-AR-0024,Level 3 - Block Wall Layout & Details,2/19/2026,-,-,-
+AR,RFAS-AR-0038,Level 6 - Block Wall Layout & Details,2/12/2026,-,-,-
+AR,RFAS-AR-0039,Level 6 - Partition Wall Support Layout & Details,2/12/2026,-,-,-
+AR,RFAS-AR-0047,Level 1 - Soffit Finishes & Details,2/12/2026,-,-,-
+AR,RFAS-AR-0048,Level 1 - Ceiling Finishes & Details,2/12/2026,-,-,-
+AR,RFAS-AR-0053,Level 6 - Soffit Finishes & Details,2/5/2026,-,-,-
+AR,RFAS-AR-0063,"Level 2 - Interior Elevation Views, Layout & Details",2/19/2026,-,-,-
+AR,RFAS-AR-0064,Level 2 - Toilet Layout & Details,2/19/2026,-,-,-
+AR,RFAS-AR-0065,Level 2 - GENSET Room Layout & Details,2/19/2026,-,-,-
+AR,RFAS-AR-0067,"Level 6 - Interior Elevation Views, Layout & Details",2/26/2026,-,-,-
+AR,RFAS-AR-0068,Level 6 - GENSET Room Layout & Details,2/26/2026,-,-,-
+AR,RFAS-AR-0073,Level 1 - Block-out & Pipe Sleeve Details,2/23/2026,-,-,-
+AR,RFAS-AR-0074,Level 2 - Block-out & Pipe Sleeve Details,2/9/2026,-,-,-
+EL,RFAS-EL-0005,Medium Voltage And Communications Routing Layout,1/31/2026,-,-,-
+EL,RFAS-EL-0037,LV  Single Line Diagram For Building Load Sheet 3,1/23/2026,-,-,-
+EL,RFAS-EL-0038,LV  Single Line Diagram For Building Load Sheet 4,1/23/2026,-,-,-
+EL,RFAS-EL-0039,LV  Single Line Diagram For Building Load Sheet 5,1/23/2026,-,-,-
+EL,RFAS-EL-0040,LV  Single Line Diagram For Building Load Sheet 6,1/23/2026,-,-,-
+EL,RFAS-EL-0041,Automatic Fire Detection And Alarm System Schematic,1/26/2026,-,-,-
+EL,RFAS-EL-0042,Public Address And Voice Alarm System Schematic,1/30/2026,-,-,-
+EL,RFAS-EL-0043,Lighting Control System Schematic,2/4/2026,-,-,-
+EL,RFAS-EL-0044,Data Cabling System Schematic,2/9/2026,-,-,-
+EL,RFAS-EL-0045,Overall Security System Schematic,2/20/2026,-,-,-
+EL,RFAS-EL-0046,Lightning Protection And Grounding System Schematic,1/23/2026,-,-,-
+EL,RFAS-EL-0047,Building Management System Schematic,2/27/2026,-,-,-
+EL,RFAS-EL-0048,Electrical Power Monitoring System Schematic,2/27/2026,-,-,-
+EL,RFAS-EL-0049,Chiller Management System Schematic,2/27/2026,-,-,-
+EL,RFAS-EL-0050,Load Schedule For Level 1,1/30/2026,-,-,-
+EL,RFAS-EL-0051,Load Schedule For Level 2,1/30/2026,-,-,-
+EL,RFAS-EL-0052,Load Schedule For Level 6,1/30/2026,-,-,-
+EL,RFAS-EL-0063,Lighting Control Schematic Diagram For Level 1,2/25/2026,-,-,-
+EL,RFAS-EL-0064,Lighting Control Schematic Diagram For Level 2,2/11/2026,-,-,-
+EL,RFAS-EL-0065,Lighting Control Schematic Diagram For Level 6,2/18/2026,-,-,-
+EL,RFAS-EL-0066,Data Schematic Diagram For Level 1,2/16/2026,-,-,-
+EL,RFAS-EL-0067,Data Schematic Diagram For Level 2,2/9/2026,-,-,-
+EL,RFAS-EL-0068,Data Schematic Diagram For Level 6,2/16/2026,-,-,-
+EL,RFAS-EL-0069,Fire Alarm Schematic Diagram For Level 1,2/12/2026,-,-,-
+EL,RFAS-EL-0070,Fire Alarm Schematic Diagram For Level 2,1/30/2026,-,-,-
+EL,RFAS-EL-0071,Fire Alarm Schematic Diagram For Level 6,2/5/2026,-,-,-
+EL,RFAS-EL-0072,Fire Alarm Temincal Box Diagram For Level 1,2/2/2026,-,-,-
+EL,RFAS-EL-0073,Fire Alarm Temincal Box Diagram For Level 2,2/2/2026,-,-,-
+EL,RFAS-EL-0074,Fire Alarm Temincal Box Diagram For Level 6,2/2/2026,-,-,-
+EL,RFAS-EL-0075,Public Address Schematic Diagram For Level 1,2/14/2026,-,-,-
+EL,RFAS-EL-0076,Public Address Schematic Diagram For Level 2,1/30/2026,-,-,-
+EL,RFAS-EL-0077,Public Address Schematic Diagram For Level 6,2/7/2026,-,-,-
+EL,RFAS-EL-0078,Pre-Action Schematic Diagram For Level 1,2/6/2026,-,-,-
+EL,RFAS-EL-0079,Pre-Action Schematic Diagram For Level 2,2/6/2026,-,-,-
+EL,RFAS-EL-0080,Pre-Action Schematic Diagram For Level 6,2/6/2026,-,-,-
+EL,RFAS-EL-0104,Level 1 - Mv Cable Routing Layout ,2/9/2026,-,-,-
+EL,RFAS-EL-0105,Level 1 - LV  Cable Routing Layout ,2/16/2026,-,-,-
+EL,RFAS-EL-0106,Level 1 - Aux Power Routing Layout ,2/16/2026,-,-,-
+EL,RFAS-EL-0107,Level 1 - Mvdc Cable Routing Layout  ,2/9/2026,-,-,-
+EL,RFAS-EL-0109,Level 2 - LV  Cable Routing Layout ,2/6/2026,-,-,-
+EL,RFAS-EL-0110,Level 2 - Aux Power Routing Layout ,2/6/2026,-,-,-
+EL,RFAS-EL-0111,Level 2 - Mvdc Cable Routing Layout  ,2/2/2026,-,-,-
+EL,RFAS-EL-0112,Level 2 - SUPS Batt Cable Routing Layout ,2/20/2026,-,-,-
+EL,RFAS-EL-0113,Level 2 - SUPS Control Cable Routing Layout ,2/20/2026,-,-,-
+EL,RFAS-EL-0121,Level 3 - Electrical Routing Layout,2/24/2026,-,-,-
+EL,RFAS-EL-0122,Level 4 - Electrical Routing Layout,2/24/2026,-,-,-
+EL,RFAS-EL-0123,Level 5 - Electrical Routing Layout,2/24/2026,-,-,-
+EL,RFAS-EL-0124,Level 6 - Mv Cable Routing Layout ,2/5/2026,-,-,-
+EL,RFAS-EL-0125,Level 6 - LV  Cable Routing Layout ,2/12/2026,-,-,-
+EL,RFAS-EL-0126,Level 6 - Aux Power Routing Layout ,2/12/2026,-,-,-
+EL,RFAS-EL-0127,Level 6 - Mvdc Cable Routing Layout  ,2/5/2026,-,-,-
+EL,RFAS-EL-0128,Level 6 - SUPS Batt Cable Routing Layout ,2/20/2026,-,-,-
+EL,RFAS-EL-0129,Level 6 - SUPS Control Cable Routing Layout ,2/20/2026,-,-,-
+EL,RFAS-EL-0136,Level 1 - Cable Basket Routinh Layout ,2/25/2026,-,-,-
+EL,RFAS-EL-0137,Level 1 - Fiber Guide Routing Layout ,2/25/2026,-,-,-
+EL,RFAS-EL-0142,Level 2 - Cable Basket Routinh Layout ,2/18/2026,-,-,-
+EL,RFAS-EL-0143,Level 2 - Fiber Guide Routing Layout ,2/18/2026,-,-,-
+EL,RFAS-EL-0148,Level 3 - Communications Routing Layout,2/27/2026,-,-,-
+EL,RFAS-EL-0149,Level 4 - Communications Routing Layout,2/27/2026,-,-,-
+EL,RFAS-EL-0150,Level 5 - Communications Routing Layout,2/27/2026,-,-,-
+EL,RFAS-EL-0156,Level 1 - General Lighting System Layout,2/18/2026,-,-,-
+EL,RFAS-EL-0157,Level 1 - Emergency Light And Exit Sign Systems Layout,2/26/2026,-,-,-
+EL,RFAS-EL-0158,Level 1 - Lighting Control Layout,2/25/2026,-,-,-
+EL,RFAS-EL-0159,Level 2 - General Lighting System Layout,2/4/2026,-,-,-
+EL,RFAS-EL-0160,Level 2 - Emergency Light And Exit Sign Systems Layout,2/12/2026,-,-,-
+EL,RFAS-EL-0161,Level 2 - Lighting Control Layout,2/11/2026,-,-,-
+EL,RFAS-EL-0162,Level 3 - General Lighting System Layout,2/18/2026,-,-,-
+EL,RFAS-EL-0163,Level 3 - Emergency Light And Exit Sign Systems Layout,2/25/2026,-,-,-
+EL,RFAS-EL-0164,Level 4 - General Lighting System Layout,2/18/2026,-,-,-
+EL,RFAS-EL-0165,Level 4 - Emergency Light And Exit Sign Systems Layout,2/25/2026,-,-,-
+EL,RFAS-EL-0166,Level 5 - General Lighting System Layout,2/18/2026,-,-,-
+EL,RFAS-EL-0167,Level 5 - Emergency Light And Exit Sign Systems Layout,2/25/2026,-,-,-
+EL,RFAS-EL-0168,Level 6 - General Lighting System Layout,2/11/2026,-,-,-
+EL,RFAS-EL-0169,Level 6 - Emergency Light And Exit Sign Systems Layout,2/19/2026,-,-,-
+EL,RFAS-EL-0170,Level 6 - Lighting Control Layout,2/18/2026,-,-,-
+EL,RFAS-EL-0171,Level  Roof - General Lighting System Layout,2/25/2026,-,-,-
+EL,RFAS-EL-0172,Level Roof - Emergency Light And Exit Sign Systems Layout,2/26/2026,-,-,-
+EL,RFAS-EL-0173,Level 1 - Power And Receptacle Outlet System Layout ,2/14/2026,-,-,-
+EL,RFAS-EL-0176,Level 1 - Data Outlet System Layout ,2/17/2026,-,-,-
+EL,RFAS-EL-0178,Level 2 - Power And Receptacle Outlet System Layout ,2/6/2026,-,-,-
+EL,RFAS-EL-0181,Level 2 - Data Outlet System Layout ,2/9/2026,-,-,-
+EL,RFAS-EL-0183,"Level 3 - Power ,Voice And Data Outlet System Layout",2/21/2026,-,-,-
+EL,RFAS-EL-0184,"Level 4 - Power ,Voice And Data Outlet System Layout",2/21/2026,-,-,-
+EL,RFAS-EL-0185,"Level 5 - Power ,Voice And Data Outlet System Layout",2/21/2026,-,-,-
+EL,RFAS-EL-0186,Level 6 - Power And Receptacle Outlet System Layout ,2/13/2026,-,-,-
+EL,RFAS-EL-0189,Level 6 - Data Outlet System Layout ,2/16/2026,-,-,-
+EL,RFAS-EL-0191,Level 1 - Fire Alarm System Layout ,2/12/2026,-,-,-
+EL,RFAS-EL-0192,Level 1 - Public Address System Layout ,2/14/2026,-,-,-
+EL,RFAS-EL-0194,Level 2 - Fire Alarm System Layout ,1/30/2026,-,-,-
+EL,RFAS-EL-0197,Level 3 - Fire Alarm System Layout ,1/30/2026,-,-,-
+EL,RFAS-EL-0200,Level 4 - Fire Alarm System Layout ,2/2/2026,-,-,-
+EL,RFAS-EL-0202,Level 5 - Fire Alarm System Layout ,2/2/2026,-,-,-
+EL,RFAS-EL-0204,Level 6 - Fire Alarm System Layout ,2/5/2026,-,-,-
+EL,RFAS-EL-0205,Level 6 - Public Address System Layout ,2/7/2026,-,-,-
+EL,RFAS-EL-0207,Level Roof - Fire Alarm System Layout ,2/19/2026,-,-,-
+EL,RFAS-EL-0208,Level Roof - Public Address System Layout ,2/19/2026,-,-,-
+EL,RFAS-EL-0223,Level 1 - Earthing And Lightning Protection System Layout,2/19/2026,-,-,-
+EL,RFAS-EL-0224,Level 2 - Earthing And Lightning Protection System Layout,2/10/2026,-,-,-
+EL,RFAS-EL-0225,Level 3 - Earthing And Lightning Protection System Layout,2/12/2026,-,-,-
+EL,RFAS-EL-0226,Level 4 - Earthing And Lightning Protection System Layout,2/12/2026,-,-,-
+EL,RFAS-EL-0227,Level 5 - Earthing And Lightning Protection System Layout,2/12/2026,-,-,-
+EL,RFAS-EL-0228,Level 6 - Earthing And Lightning Protection System Layout,2/16/2026,-,-,-
+EL,RFAS-EL-0238,Typical Details For Access Control System Sheet 1,2/27/2026,-,-,-
+EL,RFAS-EL-0239,Typical Details For Access Control System Sheet 2,2/27/2026,-,-,-
+EL,RFAS-EL-0240,Access Control System Schematic,2/27/2026,-,-,-
+EL,RFAS-EL-0241,Typical Details Sheet 1,2/11/2026,-,-,-
+EL,RFAS-EL-0242,Typical Details Sheet 2,2/11/2026,-,-,-
+EL,RFAS-EL-0243,Typical Details Sheet 3,2/11/2026,-,-,-
+EL,RFAS-EL-0244,Typical Details Sheet 4,2/11/2026,-,-,-
+FP,RFAS-FI-0005,Nitrogen Suppression Schematic Diagram,1/19/2026,-,-,-
+FP,RFAS-FI-0006,Nitrogen Suppression Flow Chart Diagram,1/19/2026,-,-,-
+FP,RFAS-FI-0011,Fire Protection Matrix For Level 1,2/2/2026,-,-,-
+FP,RFAS-FI-0012,Fire Protection Matrix For Level 2,2/2/2026,-,-,-
+FP,RFAS-FI-0013,Fire Protection Matrix For Level 6,2/2/2026,-,-,-
+FP,RFAS-FI-0014,Fire Protection Matrix For Level Roof,2/2/2026,-,-,-
+FP,RFAS-FI-0016,Level 2 - Fire Sprinkler System Layout Plan,2/16/2026,-,-,-
+FP,RFAS-FI-0026,Level 2 - Fire Hose Cabinet And Fire Extinguisher Layout Plan,2/23/2026,-,-,-
+FP,RFAS-FI-0035,Typical Details Sheet 1,2/2/2026,-,-,-
+FP,RFAS-FI-0036,Typical Details Sheet 2,2/3/2026,Submitted,Pakapon,-
+FP,RFAS-FI-0037,Typical Details Sheet 3,2/4/2026,-,-,-
+FP,RFAS-FI-0038,Typical Details Sheet 4,2/5/2026,-,-,-
+FP,RFAS-FI-0039,Typical Details Sheet 5,2/6/2026,-,-,-
+FP,RFAS-FI-0040,Typical Details Sheet 6,2/7/2026,-,-,-
+HY,RFAS-HY-0010,Site Plan - Water Supply System Layout,2/23/2026,-,-,-
+HY,RFAS-HY-0011,Level 1 - Water Supply System Layout Plan,2/16/2026,-,-,-
+HY,RFAS-HY-0012,Level 2 - Water Supply System Layout Plan,2/2/2026,-,-,-
+HY,RFAS-HY-0013,Level 6 - Water Supply System Layout Plan,2/23/2026,-,-,-
+HY,RFAS-HY-0014,Level Roof - Water Supply System Layout Plan,2/23/2026,-,-,-
+HY,RFAS-HY-0015,Site Plan - Wastewater And Stromwater System Layout  Plan,2/23/2026,-,-,-
+HY,RFAS-HY-0016,Level 1 - Wastewater And Stormwater System Layout,2/23/2026,-,-,-
+HY,RFAS-HY-0017,Level 2 - Wastewater And Stormwater System Layout,2/9/2026,-,-,-
+HY,RFAS-HY-0027,Level 2 - Toilet Details,2/16/2026,-,-,-
+HY,RFAS-HY-0028,Scope Demarcation - Sheet 1,2/2/2026,-,-,-
+HY,RFAS-HY-0029,Scope Demarcation - Sheet 2,2/2/2026,-,-,-
+CSD,RFAS-CSD-0012,"Level 2 - Combine Wall Data Hall C , Fan Wall C",2/2/2026,Delayed,Pakapon,-
+CSD,RFAS-CSD-0020,Level 1 - Combine Ceiling Layout Plan,2/9/2026,-,-,-
+CSD,RFAS-CSD-0021,Level 2 - Combine Ceiling Layout Plan,1/19/2026,-,-,-
+ST,RFAS-ST-0003,Level 2 - Concrete Plinth Layout Plan & Details,2/15/2026,-,-,-
+ST,RFAS-ST-0004,Level 2 - Ladder Cover Sections & Details,2/15/2026,-,-,-
+ST,RFAS-ST-0013,Level 2 - Steel Support & Details,2/22/2026,-,-,-
