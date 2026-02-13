@@ -340,12 +340,12 @@ def update_heartbeat(username):
         idx = df.index[df['Name'] == username].tolist()
         if idx:
             i = idx[0]
-            # 1. อัพเดทเวลาล่าสุดเสมอ
+            # อัพเดทเวลาล่าสุด
             df.at[i, 'Last_Seen'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # 2. 🟢 FIX: ถ้าสถานะเดิมเป็น Offline ให้ปลุกเป็น Online ทันที
-            current_status = str(df.at[i, 'Status'])
-            if "Offline" in current_status or current_status == "nan" or current_status == "":
+            # ถ้าสถานะเดิมเป็น Offline หรือว่างเปล่า -> บังคับเปลี่ยนเป็น Online
+            current_stat = str(df.at[i, 'Status'])
+            if "Offline" in current_stat or current_stat == "nan" or current_stat == "":
                 df.at[i, 'Status'] = "Online"
 
             save_data(df, STATUS_FILE)
@@ -469,15 +469,21 @@ def highlight_rfi(row):
 
 
 def main_app():
+    # 1. เอา set_page_config ไว้บรรทัดแรกสุด
     st.set_page_config(page_title="BIM Tracker Pro", layout="wide", page_icon="🏗️")
+
+    # (ลบส่วน Auto Refresh ออกไปแล้ว)
+
     init_files()
     check_auto_offline()
 
     if 'logged_in' not in st.session_state: st.session_state.logged_in = False
     if 'username' not in st.session_state: st.session_state.username = ""
+
+    # --- ส่วน Login ---
     if not st.session_state.logged_in:
         st.markdown("### 🏗️ BIM Team Tracker")
-        st.caption("Mode: GitHub / Cloud (Data persistence is temporary)")
+        st.caption("Mode: GitHub / Cloud")
         st.divider()
         c1, c2, c3 = st.columns([1, 2, 1])
         with c2:
@@ -485,14 +491,16 @@ def main_app():
             p = st.text_input("Password", type="password")
             if st.button("Login", use_container_width=True):
                 users = load_data(CREDENTIALS_FILE)
-                if not users[users['Username'] == u].empty:
-                    st.session_state.logged_in = True
-                    st.session_state.username = u
+                if not users.empty:
+                    if not users[users['Username'] == u].empty:
+                        # Login สำเร็จ
+                        st.session_state.logged_in = True
+                        st.session_state.username = u
 
-                    # 🟢 FIX: บังคับเปลี่ยนสถานะใน CSV ทันที
-                    update_heartbeat(u)
+                        # ✅ บังคับอัพเดทสถานะเป็น Online ทันทีตรงนี้
+                        update_heartbeat(u)
 
-                    st.rerun()
+                        st.rerun()
                     else:
                         st.error("Wrong Password")
                 else:
