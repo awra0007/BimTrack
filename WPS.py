@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import os
 import sys
 import time
@@ -373,28 +373,25 @@ def save_uploaded_image(uploaded_file, username):
 def update_heartbeat(username):
     df = load_data(STATUS_FILE)
 
-    # ป้องกันกรณีไฟล์ว่างเปล่า
+    # ป้องกันไฟล์ว่าง
     if df.empty or 'Name' not in df.columns:
         df = pd.DataFrame(
             columns=["Name", "Current_File", "Level", "Task_Detail", "Last_Updated", "Last_Seen", "Status"])
 
     idx = df.index[df['Name'] == username].tolist()
 
-    # 🟢 FIX: คำนวณเวลาไทย (UTC + 7)
+    # 🟢 คำนวณเวลาไทย (UTC + 7 ชั่วโมง)
     thai_now = datetime.utcnow() + timedelta(hours=7)
 
-    # 1. เวลาเต็ม (สำหรับคำนวณ Offline)
-    timestamp = thai_now.strftime("%Y-%m-%d %H:%M:%S")
-
-    # 2. เวลาโชว์ (วันที่ย่อ/เดือน + เวลา) เช่น "13/02 11:45"
-    time_short = thai_now.strftime("%d/%m %H:%M")
+    timestamp = thai_now.strftime("%Y-%m-%d %H:%M:%S")  # เวลาเต็ม
+    time_short = thai_now.strftime("%d/%m %H:%M")  # วันที่ย่อ + เวลา
 
     if idx:
         i = idx[0]
         df.at[i, 'Last_Seen'] = timestamp
-        df.at[i, 'Last_Updated'] = time_short  # อัพเดทเวลาโชว์
+        df.at[i, 'Last_Updated'] = time_short  # อัพเดทเวลาโชว์ด้วย
 
-        # ถ้าสถานะเดิม Offline -> เปลี่ยนเป็น Online
+        # ถ้าสถานะเดิมเป็น Offline/ว่าง -> เปลี่ยนเป็น Online
         current_stat = str(df.at[i, 'Status'])
         if "Offline" in current_stat or current_stat == "nan" or current_stat == "":
             df.at[i, 'Status'] = "Online"
@@ -418,7 +415,7 @@ def check_auto_offline():
     df = load_data(STATUS_FILE)
     if df.empty: return
 
-    # 🟢 FIX: ใช้เวลาไทยในการเช็ค (UTC + 7)
+    # 🟢 ใช้เวลาไทย (UTC + 7) ในการตรวจสอบ
     thai_now = datetime.utcnow() + timedelta(hours=7)
 
     changed = False
@@ -431,11 +428,11 @@ def check_auto_offline():
             if "Offline" in status: continue
             if last_seen_str == "nan" or last_seen_str == "": continue
 
-            # คำนวณเวลา
+            # คำนวณความต่างเวลา
             last_seen = datetime.strptime(last_seen_str, "%Y-%m-%d %H:%M:%S")
             diff = (thai_now - last_seen).total_seconds() / 60
 
-            # ถ้าหายไปนานเกินกำหนด (เช่น 5 นาที) -> Offline
+            # ถ้าหายไปนานกว่ากำหนด (เช่น 5 นาที) -> Offline
             if diff > OFFLINE_TIMEOUT_MINUTES:
                 df.at[i, 'Status'] = "⚫ Offline"
                 df.at[i, 'Current_File'] = "Idle"
@@ -443,7 +440,8 @@ def check_auto_offline():
         except:
             pass
 
-    if changed: save_data(df, STATUS_FILE)
+    if changed:
+        save_data(df, STATUS_FILE)
 
 
 def send_private_message(from_user, to_user, message):
