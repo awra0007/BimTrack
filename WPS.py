@@ -340,7 +340,14 @@ def update_heartbeat(username):
         idx = df.index[df['Name'] == username].tolist()
         if idx:
             i = idx[0]
+            # 1. อัพเดทเวลาล่าสุดเสมอ
             df.at[i, 'Last_Seen'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # 2. 🟢 FIX: ถ้าสถานะเดิมเป็น Offline ให้ปลุกเป็น Online ทันที
+            current_status = str(df.at[i, 'Status'])
+            if "Offline" in current_status or current_status == "nan" or current_status == "":
+                df.at[i, 'Status'] = "Online"
+
             save_data(df, STATUS_FILE)
 
 
@@ -478,11 +485,14 @@ def main_app():
             p = st.text_input("Password", type="password")
             if st.button("Login", use_container_width=True):
                 users = load_data(CREDENTIALS_FILE)
-                if not users.empty:
-                    if not users[users['Username'] == u].empty:
-                        st.session_state.logged_in = True
-                        st.session_state.username = u
-                        st.rerun()
+                if not users[users['Username'] == u].empty:
+                    st.session_state.logged_in = True
+                    st.session_state.username = u
+
+                    # 🟢 FIX: บังคับเปลี่ยนสถานะใน CSV ทันที
+                    update_heartbeat(u)
+
+                    st.rerun()
                     else:
                         st.error("Wrong Password")
                 else:
