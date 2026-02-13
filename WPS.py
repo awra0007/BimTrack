@@ -3,18 +3,23 @@ import pandas as pd
 from datetime import datetime, date
 import os
 import sys
-import subprocess
 import time
 import base64
 from PIL import Image
 
-DATA_FOLDER = "."
+# ==========================================
+# ⚙️ GITHUB / CLOUD CONFIGURATION
+# ==========================================
+# ใช้ Relative Path แทน Drive R:
+# สมมติว่าคุณเอาไฟล์ Excel/CSV ไว้ที่ root ของ repo หรือโฟลเดอร์ data
+DATA_FOLDER = "."  # หรือ "data" หากคุณสร้างโฟลเดอร์ชื่อ data ใน github
+RFI_FOLDER = "RFI_PDFs"  # คุณต้องสร้างโฟลเดอร์นี้ใน Github และเอาไฟล์ PDF ใส่เข้าไป
+IMG_FOLDER = "profile_images"
 
-# ชื่อไฟล์ต่างๆ (คงเดิมตามที่คุยกัน)
+# ชื่อไฟล์ (ต้องตรงกับที่อัพโหลดขึ้น Github)
 DRAWING_EXCEL = "TR-BKK2-PH1 - Shop Drawing Submission_R0.xlsx"
 RFI_EXCEL = "TR-BKK2-PH1 - Request for Information Submission_R1.xlsx"
 
-# รวม Path ให้รู้จัก DATA_FOLDER ที่เราแก้ใหม่
 MASTER_DRAWING_PATH = os.path.join(DATA_FOLDER, DRAWING_EXCEL)
 MASTER_RFI_PATH = os.path.join(DATA_FOLDER, RFI_EXCEL)
 
@@ -23,15 +28,9 @@ CREDENTIALS_FILE = os.path.join(DATA_FOLDER, "bim_users.csv")
 PRIVATE_CHAT_FILE = os.path.join(DATA_FOLDER, "bim_private_chat.csv")
 NOTIFY_FILE = os.path.join(DATA_FOLDER, "bim_notifications.csv")
 RFI_LINKS_FILE = os.path.join(DATA_FOLDER, "bim_drawing_rfi_links.csv")
-IMG_FOLDER = os.path.join(DATA_FOLDER, "profile_images")
-
-# ถ้ายังไม่มีโฟลเดอร์ ให้สร้างเผื่อไว้ในโค้ดกันพัง
-if not os.path.exists(IMG_FOLDER):
-    os.makedirs(IMG_FOLDER)
 
 # Settings
 OFFLINE_TIMEOUT_MINUTES = 5
-REFRESH_RATE = 3
 
 # Lists
 FILE_LIST = ["AR-LV1", "AR-LV2", "AR-Facade", "ST-Foundation", "ST-Framing",
@@ -45,16 +44,16 @@ SHEET_MAPPING = {
 }
 SHEETS_TO_READ = list(SHEET_MAPPING.keys())
 
-def init_files():
-    try:
-        if not os.path.exists(DATA_FOLDER): os.makedirs(DATA_FOLDER)
-        if not os.path.exists(IMG_FOLDER): os.makedirs(IMG_FOLDER)
-    except OSError:
-        if st.runtime.exists():
-            st.error(f"Cannot access Network Path: {DATA_FOLDER}")
-            st.warning("Please check VPN or Network Drive connection.")
-            st.stop()
 
+def init_files():
+    # สร้างโฟลเดอร์ถ้ายังไม่มี (สำหรับ Session ปัจจุบัน)
+    if not os.path.exists(DATA_FOLDER) and DATA_FOLDER != ".":
+        os.makedirs(DATA_FOLDER)
+    if not os.path.exists(IMG_FOLDER):
+        os.makedirs(IMG_FOLDER)
+
+    # หมายเหตุ: การสร้างไฟล์ default บน Cloud จะหายไปเมื่อ App restart
+    # แนะนำให้อัพโหลดไฟล์ CSV เปล่าๆ ขึ้น Github ไปด้วยเลย
     members = [f"Member_{i + 1}" for i in range(20)]
     default_members = ["Pakapon"] + members
 
@@ -101,22 +100,17 @@ def save_rfi_link(drawing_rfas, rfi_string):
     df_final = pd.concat([df_links, new_row], ignore_index=True)
     save_data(df_final, RFI_LINKS_FILE)
 
-if st.runtime.exists():
-    @st.cache_data(ttl=60)
-    def load_rfi_data_global():
-        return _read_rfi_excel()
+
+# Cache Data Loading
+@st.cache_data(ttl=60)
+def load_rfi_data_global():
+    return _read_rfi_excel()
 
 
-    @st.cache_data(ttl=60)
-    def load_drawing_excel(rfi_status_map):
-        return _read_drawing_excel(rfi_status_map)
-else:
-    def load_rfi_data_global():
-        return _read_rfi_excel()
+@st.cache_data(ttl=60)
+def load_drawing_excel(rfi_status_map):
+    return _read_drawing_excel(rfi_status_map)
 
-
-    def load_drawing_excel(rfi_status_map):
-        return _read_drawing_excel(rfi_status_map)
 
 def _read_rfi_excel():
     if not os.path.exists(MASTER_RFI_PATH): return pd.DataFrame(), {}
@@ -170,7 +164,7 @@ def _read_rfi_excel():
             except:
                 return str(val)
         if pd.isna(val): return "-"
-        if val.year <= 1900: return "-"  # Fix 1899/1900
+        if val.year <= 1900: return "-"
         return val.strftime('%d %b %Y')
 
     if "Actual Submission Date" in final_df.columns:
@@ -183,7 +177,6 @@ def _read_rfi_excel():
 def _read_drawing_excel(rfi_status_map):
     if not os.path.exists(MASTER_DRAWING_PATH): return pd.DataFrame(), "File Not Found"
 
-    # Load Links
     df_links = load_data(RFI_LINKS_FILE)
     links_dict = {}
     if not df_links.empty:
@@ -212,7 +205,6 @@ def _read_drawing_excel(rfi_status_map):
                 temp = pd.DataFrame()
                 temp["RFAS Doc No."] = df[c_rfas]
                 temp["Trade"] = SHEET_MAPPING.get(sheet, sheet)
-
                 temp["Document Description"] = df[c_desc] if c_desc else "-"
 
                 c_plan = find_col(["planned"])
@@ -243,7 +235,7 @@ def _read_drawing_excel(rfi_status_map):
                         rfis = [x.strip() for x in l_rfi.split(',')]
                         for r in rfis:
                             act = rfi_status_map.get(r, "PENDING")
-                            if not any(x in act for x in ["AUR", "STT", "CLOSED"]):
+                            if not any(x in act for x in ["CLOSED"]):
                                 is_blocked = True
 
                     link_list.append(l_rfi)
@@ -279,24 +271,50 @@ def _read_drawing_excel(rfi_status_map):
     return final.fillna("-"), "OK"
 
 
+# ------------------------------------------------------------------
+# 📂 PDF HANDLING FOR CLOUD (MODIFIED)
+# ------------------------------------------------------------------
 def open_pdf(doc_no):
+    # ตรวจสอบว่ามีโฟลเดอร์ RFI หรือไม่
     if not os.path.exists(RFI_FOLDER):
-        st.error(f"Folder not found: {RFI_FOLDER}")
+        st.error(f"Folder not found in Repo: {RFI_FOLDER}")
         return
+
+    # ค้นหาไฟล์ PDF
+    target_file = None
     try:
         files = os.listdir(RFI_FOLDER)
-        found = False
         for f in files:
             if f.lower().startswith(str(doc_no).lower()) and f.lower().endswith(".pdf"):
-                os.startfile(os.path.join(RFI_FOLDER, f))
-                st.toast(f"Opening {doc_no}", icon="📂")
-                found = True
+                target_file = os.path.join(RFI_FOLDER, f)
                 break
-        if not found:
-            st.toast(f"⚠️ File not found: {doc_no}", icon="❌")
-    except Exception as e:
-        st.error(str(e))
 
+        if target_file:
+            # บน Cloud เราใช้ st.download_button หรือแสดง PDF Embed แทน os.startfile
+            with open(target_file, "rb") as pdf_file:
+                PDFbyte = pdf_file.read()
+
+            st.markdown(f"**Found:** `{os.path.basename(target_file)}`")
+
+            # ปุ่ม Download
+            st.download_button(label="⬇️ Download PDF",
+                               data=PDFbyte,
+                               file_name=os.path.basename(target_file),
+                               mime='application/octet-stream')
+
+            # (Optional) แสดง Preview ในเว็บเลย
+            # base64_pdf = base64.b64encode(PDFbyte).decode('utf-8')
+            # pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+            # st.markdown(pdf_display, unsafe_allow_html=True)
+
+        else:
+            st.toast(f"⚠️ File not found in Repo: {doc_no}", icon="❌")
+
+    except Exception as e:
+        st.error(f"Error accessing file: {str(e)}")
+
+
+# ------------------------------------------------------------------
 
 def get_image_base64(username):
     file_path = os.path.join(IMG_FOLDER, f"{username}.png")
@@ -314,6 +332,7 @@ def save_uploaded_image(uploaded_file, username):
         return True
     except:
         return False
+
 
 def update_heartbeat(username):
     df = load_data(STATUS_FILE)
@@ -425,13 +444,14 @@ def highlight_rfi(row):
     style = [''] * len(row)
     try:
         act = str(row.get('Action By', '')).upper()
-        if any(x in act for x in ["AUR", "STT", "CLOSED"]):
-            return ['background-color: #d4edda; color: #155724'] * len(row)
-        if "CTA" in act:
+        if any(x in act for x in ["AUR", "STT", "CTA"]):
             return ['background-color: #fff3cd; color: #856404'] * len(row)
+        if "CLOSED" in act:
+            return ['background-color: #d4edda; color: #155724'] * len(row)
     except:
         pass
     return style
+
 
 def main_app():
     st.set_page_config(page_title="BIM Tracker Pro", layout="wide", page_icon="🏗️")
@@ -442,7 +462,7 @@ def main_app():
     if 'username' not in st.session_state: st.session_state.username = ""
     if not st.session_state.logged_in:
         st.markdown("### 🏗️ BIM Team Tracker")
-        st.caption(f"Server: {DATA_FOLDER}")
+        st.caption("Mode: GitHub / Cloud (Data persistence is temporary)")
         st.divider()
         c1, c2, c3 = st.columns([1, 2, 1])
         with c2:
@@ -568,7 +588,7 @@ def main_app():
                 st.dataframe(final_df.style.apply(highlight_online_status, axis=1), use_container_width=True,
                              height=500)
             else:
-                    st.info("No active sessions.")
+                st.info("No active sessions.")
 
         # --- VIEW 2: Drawing Board ---
         elif selected_tab == "📋 Drawing Status":
@@ -576,23 +596,78 @@ def main_app():
             df_excel, msg = load_drawing_excel(rfi_status_map)
 
             if not df_excel.empty:
-                # --- 1. ส่วนควบคุมการ Filter ---
-                col_f1, col_f2 = st.columns([1, 2])
+                # 1. Logic
+                def get_month_key(val):
+                    try:
+                        if pd.isna(val) or val == "-" or val == "": return None
+                        dt = datetime.strptime(str(val), '%d %b %Y')
+                        return dt.strftime('%Y-%m')
+                    except:
+                        return None
+
+                df_excel['Filter_Month'] = df_excel['Planned Submission'].apply(get_month_key)
+
+                today = date.today()
+
+                def get_color_category(row):
+                    status = str(row.get('Status', '')).lower()
+                    approve = str(row.get('Approval Date', ''))
+                    planned = str(row.get('Planned Submission', ''))
+                    submit = str(row.get('Submission Date', ''))
+                    is_blocked = row.get('Is_Blocked', False)
+
+                    # 1. Green: Approved/Closed
+                    is_approved = False
+                    if approve != "-" and approve != "": is_approved = True
+                    if any(x in status for x in ["closed", "a", "b"]): is_approved = True
+                    if is_approved: return "🟢 Approved/Closed"
+
+                    # Check Overdue Condition
+                    is_overdue = False
+                    if "overdue" in status or "delayed" in status or "revise" in status: is_overdue = True
+                    if (submit == "-" or submit == "") and (planned != "-" and planned != ""):
+                        try:
+                            if datetime.strptime(planned, '%d %b %Y').date() < today: is_overdue = True
+                        except:
+                            pass
+
+                    # 2. Purple & Red & Yellow
+                    if is_overdue and is_blocked: return "🟣 Overdue & Blocked"
+                    if is_overdue: return "🔴 Overdue"
+                    if "pending" in status: return "🟡 Pending"
+                    return "⚪ Normal"
+
+                df_excel['Status_Color'] = df_excel.apply(get_color_category, axis=1)
+
+                # 2. Filter Controls
+                col_f1, col_f2, col_f3 = st.columns([1, 1, 1])
+
                 with col_f1:
-                    all_trades = []
-                    if "Trade" in df_excel.columns:
-                        all_trades = ["ALL"] + sorted(
-                            [str(x) for x in df_excel['Trade'].unique() if str(x) != "nan" and str(x) != "-"])
-                    sel_trade = st.selectbox("📂 Filter Trade (หมวดงาน):", all_trades)
+                    all_trades = ["ALL"] + sorted(
+                        [str(x) for x in df_excel['Trade'].unique() if str(x) not in ["nan", "-"]])
+                    sel_trade = st.selectbox("📂 Filter Trade:", all_trades)
 
                 with col_f2:
-                    search_query = st.text_input("🔍 Search (พิมค้นหา Description / RFAS / Level):", "")
+                    available_months = sorted([x for x in df_excel['Filter_Month'].unique() if x is not None])
+                    sel_months = st.multiselect("📅 Planned Month:", available_months)
 
-                # --- 2. การประมวลผลการ Filter ข้อมูล ---
+                with col_f3:
+                    color_options = ["🟢 Approved/Closed", "🟣 Overdue & Blocked", "🔴 Overdue", "🟡 Pending", "⚪ Normal"]
+                    sel_colors = st.multiselect("🎨 Status Color:", color_options)
+
+                search_query = st.text_input("🔍 Search (Description / RFAS / Level):", "")
+
+                # 3. Apply Filters
                 df_display = df_excel.copy()
 
                 if sel_trade != "ALL":
                     df_display = df_display[df_display['Trade'] == sel_trade]
+
+                if sel_months:
+                    df_display = df_display[df_display['Filter_Month'].isin(sel_months)]
+
+                if sel_colors:
+                    df_display = df_display[df_display['Status_Color'].isin(sel_colors)]
 
                 if search_query:
                     search_query = search_query.lower()
@@ -604,40 +679,13 @@ def main_app():
                     )
                     df_display = df_display[mask]
 
-                # --- 3. DASHBOARD (คำนวณใหม่ตาม Logic Highlight) ---
+                # 4. Dashboard Metrics
                 st.markdown("---")
+
                 total_view = len(df_display)
                 submitted_view = len(df_display[df_display['Submission Date'] != "-"])
-                approved_view = len(df_display[
-                                        (df_display['Approval Date'] != "-") |
-                                        (df_display['Status'].str.lower().str.contains("closed|a|b", na=False))
-                                        ])
-
-                # Logic การนับล่าช้า/ติดขัด (ต้องเหมือนกับ highlight_drawing)
-                today = date.today()
-
-                def check_overdue_logic(row):
-                    status = str(row.get('Status', '')).lower()
-                    planned = str(row.get('Planned Submission', ''))
-                    submit = str(row.get('Submission Date', ''))
-                    is_blocked = row.get('Is_Blocked', False)
-
-                    is_overdue = False
-                    # 1. ช้าจาก Status
-                    if any(x in status for x in ["overdue", "delayed", "revise"]):
-                        is_overdue = True
-                    # 2. ช้าจากวันที่ (เลย Plan แล้วยังไม่ส่ง)
-                    if (submit == "-" or submit == "") and (planned != "-" and planned != ""):
-                        try:
-                            if datetime.strptime(planned, '%d %b %Y').date() < today:
-                                is_overdue = True
-                        except:
-                            pass
-
-                    # นับรวมทั้ง Overdue (แดง) และ Blocked (ม่วง)
-                    return is_overdue or is_blocked
-
-                overdue_view = df_display.apply(check_overdue_logic, axis=1).sum()
+                approved_view = len(df_display[df_display['Status_Color'] == "🟢 Approved/Closed"])
+                overdue_view = len(df_display[df_display['Status_Color'].isin(["🟣 Overdue & Blocked", "🔴 Overdue"])])
 
                 m1, m2, m3, m4 = st.columns(4)
                 m1.metric("Total Drawings", f"{total_view} Sheets")
@@ -645,14 +693,14 @@ def main_app():
                           delta=f"{(submitted_view / total_view * 100):.1f}%" if total_view > 0 else "0%")
                 m3.metric("Approved", f"{approved_view} Sheets")
                 m4.metric("Overdue / Blocked", f"{overdue_view} Sheets", delta_color="inverse")
+
                 st.markdown("---")
 
-                # --- 4. แสดงตารางข้อมูล ---
-                df_display = df_display.reset_index(drop=True)
+                # 5. Show Data Table
+                df_show_table = df_display.drop(columns=['Filter_Month', 'Status_Color'], errors='ignore')
 
-                # [cite_start]สร้างตารางและเก็บใส่ตัวแปร event [cite: 190]
                 event = st.dataframe(
-                    df_display.style.apply(highlight_drawing, axis=1),
+                    df_show_table.style.apply(highlight_drawing, axis=1),
                     use_container_width=True,
                     height=600,
                     hide_index=True,
@@ -662,7 +710,7 @@ def main_app():
                                   "Planned Submission", "Submission Date", "Status", "Action", "Revision"]
                 )
 
-                # --- 5. การทำงานเมื่อเลือก Row ---
+                # 6. RFI Link Action
                 if event.selection.rows:
                     idx = event.selection.rows[0]
                     sel_row = df_display.iloc[idx]
@@ -698,8 +746,10 @@ def main_app():
                                     if not match_row.empty:
                                         rfi_stat = str(match_row.iloc[0]['Action By']).upper()
 
-                                if any(x in rfi_stat for x in ["AUR", "STT", "CLOSED"]):
+                                if any(x in rfi_stat for x in ["CLOSED"]):
                                     bg_color, text_color, border_color = "#d4edda", "#155724", "#c3e6cb"
+                                elif any(x in rfi_stat for x in ["STT"]):
+                                    bg_color, text_color, border_color = "#fff3cd", "#856404", "#ffeeba"
                                 else:
                                     bg_color, text_color, border_color = "#f8d7da", "#721c24", "#f5c6cb"
 
@@ -715,7 +765,7 @@ def main_app():
                         if st.button("💾 Save Link", key=f"btn_save_{unique_key_suffix}"):
                             new_link_str = ", ".join(selected_rfis)
                             save_rfi_link(rfas_no, new_link_str)
-                            st.success(f"บันทึกข้อมูลเรียบร้อย!")
+                            st.success(f"บันทึกข้อมูลเรียบร้อย! (บันทึกชั่วคราวใน Session)")
                             st.cache_data.clear()
                             time.sleep(0.5)
                             st.rerun()
@@ -760,7 +810,7 @@ def main_app():
 
                     if any(x in action for x in ["AUR", "STT", "CLOSED"]):
                         st.info(f"Selected: **{doc_no}** (Action: {action})")
-                        if st.button("📂 Open PDF File", type="primary", use_container_width=True):
+                        if st.button("📂 Download/Open PDF", type="primary", use_container_width=True):
                             open_pdf(doc_no)
                     else:
                         st.warning(f"Selected: {doc_no} (Action: {action}) - PDF available only for AUR/STT/Closed.")
@@ -769,7 +819,7 @@ def main_app():
             else:
                 st.info("No RFI Data Found.")
 
-    # --- Right Panel (Original) ---
+    # --- Right Panel ---
     if show_members and col_right:
         with col_right:
             st.subheader("👥 Members")
@@ -822,21 +872,10 @@ def main_app():
                         send_notification(target_user, st.session_state.username, "Relinquish All")
                         st.toast("Sent!")
 
-    time.sleep(REFRESH_RATE)
-    st.rerun()
+    if st.sidebar.button("🔄 Refresh Data", use_container_width=True):
+        st.rerun()
 
 
+# Run main app directly
 if __name__ == "__main__":
-    if st.runtime.exists():
-        main_app()
-    else:
-        try:
-            import webview
-        except:
-            sys.exit("Install pywebview: pip install pywebview")
-        init_files()
-        subprocess.Popen([sys.executable, "-m", "streamlit", "run", __file__, "--server.headless=true"],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(3)
-        webview.create_window("BIM Tracker", "http://localhost:8501", width=1400, height=900, confirm_close=True)
-        webview.start()
+    main_app()
