@@ -336,19 +336,40 @@ def save_uploaded_image(uploaded_file, username):
 
 def update_heartbeat(username):
     df = load_data(STATUS_FILE)
-    if not df.empty:
-        idx = df.index[df['Name'] == username].tolist()
-        if idx:
-            i = idx[0]
-            # อัพเดทเวลาล่าสุด
-            df.at[i, 'Last_Seen'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # ถ้าสถานะเดิมเป็น Offline หรือว่างเปล่า -> บังคับเปลี่ยนเป็น Online
-            current_stat = str(df.at[i, 'Status'])
-            if "Offline" in current_stat or current_stat == "nan" or current_stat == "":
-                df.at[i, 'Status'] = "Online"
+    # ป้องกันกรณีไฟล์ว่างเปล่า ให้สร้างโครงสร้างรอไว้
+    if df.empty or 'Name' not in df.columns:
+        df = pd.DataFrame(
+            columns=["Name", "Current_File", "Level", "Task_Detail", "Last_Updated", "Last_Seen", "Status"])
 
-            save_data(df, STATUS_FILE)
+    # เช็คว่ามีชื่อ user นี้ในตารางหรือยัง
+    idx = df.index[df['Name'] == username].tolist()
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    time_short = datetime.now().strftime("%H:%M")
+
+    if idx:
+        # 1. กรณี "มีชื่อเดิมอยู่แล้ว" -> ให้อัพเดทสถานะ
+        i = idx[0]
+        df.at[i, 'Last_Seen'] = timestamp
+
+        # ถ้าสถานะเดิมเป็น Offline หรือค่าว่าง -> ปลุกให้เป็น Online
+        current_stat = str(df.at[i, 'Status'])
+        if "Offline" in current_stat or current_stat == "nan" or current_stat == "":
+            df.at[i, 'Status'] = "Online"
+
+    else:
+        # 2. 🟢 กรณี "เป็นคนใหม่" (หาชื่อไม่เจอ) -> ให้เพิ่มแถวใหม่เข้าไปเลย
+        new_row = pd.DataFrame([{
+            "Name": username,
+            "Current_File": "Idle",
+            "Level": "-",
+            "Task_Detail": "-",
+            "Last_Updated": time_short,
+            "Last_Seen": timestamp,
+            "Status": "Online"  # เข้ามาปุ๊บ Online ปั๊บ
+        }])
+        df = pd.concat([df, new_row], ignore_index=True)
 
 
 def check_auto_offline():
