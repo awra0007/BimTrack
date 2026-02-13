@@ -7,6 +7,7 @@ import time
 import base64
 from PIL import Image
 
+
 # ==========================================
 # ⚙️ GITHUB / CLOUD CONFIGURATION
 # ==========================================
@@ -372,30 +373,33 @@ def save_uploaded_image(uploaded_file, username):
 def update_heartbeat(username):
     df = load_data(STATUS_FILE)
 
-    # ป้องกันกรณีไฟล์ว่างเปล่า ให้สร้างโครงสร้างรอไว้
+    # ป้องกันกรณีไฟล์ว่างเปล่า
     if df.empty or 'Name' not in df.columns:
         df = pd.DataFrame(
             columns=["Name", "Current_File", "Level", "Task_Detail", "Last_Updated", "Last_Seen", "Status"])
 
-    # เช็คว่ามีชื่อ user นี้ในตารางหรือยัง
     idx = df.index[df['Name'] == username].tolist()
 
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    time_short = datetime.now().strftime("%H:%M")
+    # 🟢 FIX: คำนวณเวลาไทย (UTC + 7)
+    thai_now = datetime.utcnow() + timedelta(hours=7)
+
+    # 1. เวลาเต็ม (สำหรับคำนวณ Offline)
+    timestamp = thai_now.strftime("%Y-%m-%d %H:%M:%S")
+
+    # 2. เวลาโชว์ (วันที่ย่อ/เดือน + เวลา) เช่น "13/02 11:45"
+    time_short = thai_now.strftime("%d/%m %H:%M")
 
     if idx:
-        # 1. กรณี "มีชื่อเดิมอยู่แล้ว" -> ให้อัพเดทสถานะ
         i = idx[0]
         df.at[i, 'Last_Seen'] = timestamp
-        df.at[i, 'Last_Updated'] = time_short # อัพเดทเวลาโชว์ด้วย
+        df.at[i, 'Last_Updated'] = time_short  # อัพเดทเวลาโชว์
 
-        # ถ้าสถานะเดิมเป็น Offline หรือค่าว่าง -> ปลุกให้เป็น Online
+        # ถ้าสถานะเดิม Offline -> เปลี่ยนเป็น Online
         current_stat = str(df.at[i, 'Status'])
         if "Offline" in current_stat or current_stat == "nan" or current_stat == "":
             df.at[i, 'Status'] = "Online"
-
     else:
-        # 2. 🟢 กรณี "เป็นคนใหม่" (หาชื่อไม่เจอ) -> ให้เพิ่มแถวใหม่เข้าไปเลย
+        # User ใหม่
         new_row = pd.DataFrame([{
             "Name": username,
             "Current_File": "Idle",
@@ -403,11 +407,10 @@ def update_heartbeat(username):
             "Task_Detail": "-",
             "Last_Updated": time_short,
             "Last_Seen": timestamp,
-            "Status": "Online"  # เข้ามาปุ๊บ Online ปั๊บ
+            "Status": "Online"
         }])
         df = pd.concat([df, new_row], ignore_index=True)
 
-    # 🟢 สำคัญมาก! ต้องมีบรรทัดนี้ ไม่งั้นสถานะ Online จะไม่ถูกจำ
     save_data(df, STATUS_FILE)
 
 
@@ -415,37 +418,32 @@ def check_auto_offline():
     df = load_data(STATUS_FILE)
     if df.empty: return
 
-    now = datetime.now()
-    changed = False
+    # 🟢 FIX: ใช้เวลาไทยในการเช็ค (UTC + 7)
+    thai_now = datetime.utcnow() + timedelta(hours=7)
 
+    changed = False
     for i, row in df.iterrows():
         try:
             last_seen_str = str(row['Last_Seen'])
             status = str(row['Status'])
 
-            # ถ้าเป็น Offline อยู่แล้ว ไม่ต้องเช็คซ้ำ
-            if "Offline" in status:
-                continue
+            # ข้ามคน Offline อยู่แล้ว
+            if "Offline" in status: continue
+            if last_seen_str == "nan" or last_seen_str == "": continue
 
-            if last_seen_str == "nan" or last_seen_str == "":
-                continue
-
-            # แปลงเวลา
+            # คำนวณเวลา
             last_seen = datetime.strptime(last_seen_str, "%Y-%m-%d %H:%M:%S")
+            diff = (thai_now - last_seen).total_seconds() / 60
 
-            # หาผลต่างเป็นนาที
-            diff = (now - last_seen).total_seconds() / 60
-
-            # ถ้าหายไปนานกว่าที่กำหนด (เช่น 5 หรือ 10 นาที) ค่อยปรับเป็น Offline
+            # ถ้าหายไปนานเกินกำหนด (เช่น 5 นาที) -> Offline
             if diff > OFFLINE_TIMEOUT_MINUTES:
-                df.at[i, 'Status'] = "Offline"
+                df.at[i, 'Status'] = "⚫ Offline"
                 df.at[i, 'Current_File'] = "Idle"
                 changed = True
         except:
             pass
 
-    if changed:
-        save_data(df, STATUS_FILE)
+    if changed: save_data(df, STATUS_FILE)
 
 
 def send_private_message(from_user, to_user, message):
