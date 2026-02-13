@@ -408,10 +408,18 @@ def highlight_drawing(row):
         submit = str(row.get('Submission Date', ''))
         is_blocked = row.get('Is_Blocked', False)
 
+        # 🟢🔴 0. Special Logic: Code C (Green BG / Red Text)
+        # เช็คว่ามี 'c' อยู่ในสถานะ แต่ต้องไม่ใช่คำว่า 'closed' (เพราะ closed ก็มีตัว c)
+        # และต้องระวังไม่ให้ไปจับคำว่า 'blocked' หรือ 'reject' ถ้าคุณไม่ได้ตั้งใจ
+        # แต่นี่คือ Logic ตามที่ขอ: ถ้าเจอ c ให้พื้นเขียว ตัวแดง
+        if "c" in status and "closed" not in status:
+            return ['background-color: #d4edda; color: #dc3545; font-weight: bold'] * len(row)
+
         # 🟢 1. Green: Approved/Closed
         is_approved = False
         if approve != "-" and approve != "": is_approved = True
         if any(x in status for x in ["closed", "a", "b"]): is_approved = True
+
         if is_approved:
             return ['background-color: #d4edda; color: #155724'] * len(row)
 
