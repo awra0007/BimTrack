@@ -46,26 +46,61 @@ SHEETS_TO_READ = list(SHEET_MAPPING.keys())
 
 
 def init_files():
-    # สร้างโฟลเดอร์ถ้ายังไม่มี (สำหรับ Session ปัจจุบัน)
+    # สร้างโฟลเดอร์ถ้ายังไม่มี
     if not os.path.exists(DATA_FOLDER) and DATA_FOLDER != ".":
         os.makedirs(DATA_FOLDER)
     if not os.path.exists(IMG_FOLDER):
         os.makedirs(IMG_FOLDER)
 
-    # หมายเหตุ: การสร้างไฟล์ default บน Cloud จะหายไปเมื่อ App restart
-    # แนะนำให้อัพโหลดไฟล์ CSV เปล่าๆ ขึ้น Github ไปด้วยเลย
-    members = [f"Member_{i + 1}" for i in range(20)]
-    default_members = ["Pakapon"] + members
+    # 🟢 1. กำหนดรายชื่อ User ตามที่คุณต้องการ
+    real_team = [
+        "Pakapon", "Weera", "Suttipong", "Itsarate", "Kittiphong",
+        "Tresa", "Hein", "Emon", "Klui", "Thanes", "Paul",
+        "Member_12", "Member_13", "Member_14", "Member_15",
+        "Member_16", "Member_17", "Member_18", "Member_19", "Member_20"
+    ]
 
-    if not os.path.exists(STATUS_FILE):
-        pd.DataFrame({"Name": default_members, "Current_File": "Idle", "Level": "-", "Task_Detail": "-",
-                      "Last_Updated": datetime.now().strftime("%H:%M"),
-                      "Last_Seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                      "Status": "Offline"}).to_csv(STATUS_FILE, index=False)
-
+    # 🟢 2. สร้าง/อัพเดทไฟล์ Login (Credentials)
+    # ถ้าไฟล์ไม่มี หรือมีชื่อไม่ครบตามลิสต์ใหม่ ให้สร้างใหม่เลย
+    need_create_cred = False
     if not os.path.exists(CREDENTIALS_FILE):
-        pd.DataFrame({"Username": default_members, "Password": ["1234"] * len(default_members)}).to_csv(
-            CREDENTIALS_FILE, index=False)
+        need_create_cred = True
+    else:
+        # เช็คว่ามีชื่อ Weera หรือยัง (เพื่อดูว่าเป็นไฟล์เวอร์ชั่นเก่าไหม)
+        df_cred = pd.read_csv(CREDENTIALS_FILE)
+        if "Weera" not in df_cred['Username'].values:
+            need_create_cred = True
+
+    if need_create_cred:
+        pd.DataFrame({
+            "Username": real_team,
+            "Password": ["1234"] * len(real_team)
+        }).to_csv(CREDENTIALS_FILE, index=False)
+
+    # 🟢 3. สร้าง/อัพเดทไฟล์ Status
+    # ถ้าไฟล์ไม่มี หรือยังเป็นชื่อเก่า (Member_1...) ให้รีเซ็ตใหม่ให้ตรงกับชื่อจริง
+    need_reset_status = False
+    if not os.path.exists(STATUS_FILE):
+        need_reset_status = True
+    else:
+        df_status = pd.read_csv(STATUS_FILE)
+        # เช็คว่าชื่อในไฟล์ตรงกับรายชื่อจริงหรือไม่
+        existing_names = df_status['Name'].tolist()
+        # ถ้าไม่มี "Weera" ในไฟล์ แสดงว่าเป็นไฟล์เก่าที่ต้องแก้
+        if "Weera" not in existing_names:
+            need_reset_status = True
+
+    if need_reset_status:
+        # สร้าง Dataframe ใหม่ที่มีรายชื่อถูกต้องครบถ้วน
+        pd.DataFrame({
+            "Name": real_team,
+            "Current_File": "Idle",
+            "Level": "-",
+            "Task_Detail": "-",
+            "Last_Updated": datetime.now().strftime("%H:%M"),
+            "Last_Seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Status": "Offline"
+        }).to_csv(STATUS_FILE, index=False)
 
     if not os.path.exists(PRIVATE_CHAT_FILE):
         pd.DataFrame(columns=["Timestamp", "From_User", "To_User", "Message"]).to_csv(PRIVATE_CHAT_FILE, index=False)
