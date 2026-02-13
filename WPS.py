@@ -387,6 +387,7 @@ def update_heartbeat(username):
         # 1. กรณี "มีชื่อเดิมอยู่แล้ว" -> ให้อัพเดทสถานะ
         i = idx[0]
         df.at[i, 'Last_Seen'] = timestamp
+        df.at[i, 'Last_Updated'] = time_short # อัพเดทเวลาโชว์ด้วย
 
         # ถ้าสถานะเดิมเป็น Offline หรือค่าว่าง -> ปลุกให้เป็น Online
         current_stat = str(df.at[i, 'Status'])
@@ -406,25 +407,45 @@ def update_heartbeat(username):
         }])
         df = pd.concat([df, new_row], ignore_index=True)
 
+    # 🟢 สำคัญมาก! ต้องมีบรรทัดนี้ ไม่งั้นสถานะ Online จะไม่ถูกจำ
+    save_data(df, STATUS_FILE)
+
 
 def check_auto_offline():
     df = load_data(STATUS_FILE)
     if df.empty: return
+
     now = datetime.now()
     changed = False
+
     for i, row in df.iterrows():
         try:
             last_seen_str = str(row['Last_Seen'])
-            if last_seen_str == "nan": continue
+            status = str(row['Status'])
+
+            # ถ้าเป็น Offline อยู่แล้ว ไม่ต้องเช็คซ้ำ
+            if "Offline" in status:
+                continue
+
+            if last_seen_str == "nan" or last_seen_str == "":
+                continue
+
+            # แปลงเวลา
             last_seen = datetime.strptime(last_seen_str, "%Y-%m-%d %H:%M:%S")
+
+            # หาผลต่างเป็นนาที
             diff = (now - last_seen).total_seconds() / 60
-            if diff > OFFLINE_TIMEOUT_MINUTES and "Offline" not in row['Status']:
+
+            # ถ้าหายไปนานกว่าที่กำหนด (เช่น 5 หรือ 10 นาที) ค่อยปรับเป็น Offline
+            if diff > OFFLINE_TIMEOUT_MINUTES:
                 df.at[i, 'Status'] = "Offline"
                 df.at[i, 'Current_File'] = "Idle"
                 changed = True
         except:
             pass
-    if changed: save_data(df, STATUS_FILE)
+
+    if changed:
+        save_data(df, STATUS_FILE)
 
 
 def send_private_message(from_user, to_user, message):
